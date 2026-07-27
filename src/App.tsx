@@ -263,7 +263,7 @@ function App() {
     setActiveId(id)
     setOpenColorMenu(null)
     requestAnimationFrame(() => {
-      editorWrapRef.current?.scrollIntoView({ block: 'start', behavior: 'smooth' })
+      editorWrapRef.current?.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
     })
   }
 
@@ -299,9 +299,9 @@ function App() {
   if (!editor || !activeDoc) return null
 
   return (
-    <main className="min-h-screen bg-[var(--app-bg)] text-[var(--ink)]">
+    <main className="h-screen overflow-hidden bg-[var(--app-bg)] text-[var(--ink)]">
       <style>{`@page { size: ${activePaper.print}; margin: 0; }`}</style>
-      <div className="flex min-h-screen">
+      <div className="flex h-screen overflow-hidden">
         <aside
           className={`sidebar ${sidebarOpen ? 'w-80 border-r border-[var(--line)]' : 'w-0 overflow-hidden'}`}
         >
@@ -332,7 +332,7 @@ function App() {
             </label>
           </div>
 
-          <nav className="space-y-2 px-3 pb-4">
+          <nav className="doc-list space-y-2 px-3 pb-4">
             {filteredDocs.map((doc) => (
               <button
                 className={`doc-tab ${doc.id === activeId ? 'active' : ''}`}
@@ -359,7 +359,7 @@ function App() {
           </nav>
         </aside>
 
-        <section className="flex min-w-0 flex-1 flex-col">
+        <section className="flex h-screen min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
           <header className="topbar">
             <button
               className="icon-button"

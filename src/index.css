@@ -77,9 +77,21 @@ button {
 }
 
 .sidebar {
+  display: flex;
   flex: 0 0 auto;
+  flex-direction: column;
+  height: 100vh;
+  min-height: 0;
+  overflow: hidden;
   background: var(--panel-soft);
   transition: width 180ms ease;
+}
+
+.doc-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .topbar {
@@ -87,6 +99,7 @@ button {
   background: color-mix(in srgb, var(--panel) 92%, transparent);
   border-bottom: 1px solid var(--line);
   display: flex;
+  flex: 0 0 auto;
   gap: 0.75rem;
   min-height: 4.25rem;
   padding: 0.75rem 1rem;
@@ -101,6 +114,7 @@ button {
   background: var(--panel);
   border-bottom: 1px solid var(--line);
   display: flex;
+  flex: 0 0 auto;
   gap: 0.35rem;
   min-height: 3.35rem;
   overflow-x: auto;
@@ -111,10 +125,12 @@ button {
 }
 
 .editor-wrap {
+  flex: 1 1 auto;
   display: flex;
   justify-content: center;
-  min-height: calc(100vh - 11rem);
+  min-height: 0;
   overflow: auto;
+  overscroll-behavior: contain;
   padding: 2rem;
 }
 
@@ -225,6 +241,7 @@ button {
   border-top: 1px solid var(--line);
   color: var(--muted);
   display: flex;
+  flex: 0 0 auto;
   flex-wrap: wrap;
   font-size: 0.78rem;
   gap: 1rem;
