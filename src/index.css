@@ -11,6 +11,16 @@
   --accent-soft: #dbeee9;
   --accent-ink: #073b36;
   --editor: #fffefa;
+  --editor-ink: #182221;
+  --editor-line: #e6dfd2;
+  --editor-muted: #44524f;
+  --editor-code-bg: #eee9dc;
+  --editor-code-ink: #0f172a;
+  --editor-code-block: #172120;
+  --editor-code-block-ink: #f7f5ed;
+  --editor-link: #0f6fb2;
+  --editor-placeholder: #8a918e;
+  --editor-quote: #84a59d;
   --shadow: 0 18px 50px rgba(44, 35, 23, 0.11);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color-scheme: light;
@@ -31,7 +41,17 @@
   --accent: #51b7a8;
   --accent-soft: #173c38;
   --accent-ink: #dcfffa;
-  --editor: #f7f4ed;
+  --editor: #111719;
+  --editor-ink: #edf4f1;
+  --editor-line: #2d393c;
+  --editor-muted: #b2c0bc;
+  --editor-code-bg: #263133;
+  --editor-code-ink: #f1f7f5;
+  --editor-code-block: #071011;
+  --editor-code-block-ink: #e9f5f2;
+  --editor-link: #7dd3fc;
+  --editor-placeholder: #73827e;
+  --editor-quote: #51b7a8;
   --shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
   color-scheme: dark;
 }
@@ -100,10 +120,10 @@ button {
 
 .doc-surface {
   background: var(--editor);
-  color: #182221;
+  color: var(--editor-ink);
   min-height: 72rem;
   width: min(100%, 52rem);
-  border: 1px solid #e6dfd2;
+  border: 1px solid var(--editor-line);
   box-shadow: var(--shadow);
   outline: none;
   padding: clamp(2rem, 5vw, 4.5rem);
@@ -143,28 +163,28 @@ button {
 }
 
 .doc-surface blockquote {
-  border-left: 3px solid #84a59d;
-  color: #44524f;
+  border-left: 3px solid var(--editor-quote);
+  color: var(--editor-muted);
   padding-left: 1rem;
 }
 
 .doc-surface code {
-  background: #eee9dc;
+  background: var(--editor-code-bg);
   border-radius: 4px;
-  color: #0f172a;
+  color: var(--editor-code-ink);
   padding: 0.1rem 0.3rem;
 }
 
 .doc-surface pre {
-  background: #172120;
+  background: var(--editor-code-block);
   border-radius: 8px;
-  color: #f7f5ed;
+  color: var(--editor-code-block-ink);
   overflow: auto;
   padding: 1rem;
 }
 
 .doc-surface a {
-  color: #0f6fb2;
+  color: var(--editor-link);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -186,7 +206,7 @@ button {
 }
 
 .doc-surface .is-editor-empty:first-child::before {
-  color: #8a918e;
+  color: var(--editor-placeholder);
   content: attr(data-placeholder);
   float: left;
   height: 0;
