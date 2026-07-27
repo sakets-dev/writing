@@ -1,27 +1,30 @@
 @import "tailwindcss";
 
 :root {
-  --app-bg: #f4f1ea;
-  --panel: #fffdf8;
-  --panel-soft: #f8f5ee;
-  --ink: #1d2526;
-  --muted: #6d7772;
-  --line: #ded8cd;
-  --accent: #126f64;
-  --accent-soft: #dbeee9;
-  --accent-ink: #073b36;
-  --editor: #fffefa;
-  --editor-ink: #182221;
-  --editor-line: #e6dfd2;
-  --editor-muted: #44524f;
-  --editor-code-bg: #eee9dc;
+  --app-bg: #edf1f2;
+  --panel: #fbfcfa;
+  --panel-soft: #f4f6f3;
+  --panel-glass: rgba(251, 252, 250, 0.86);
+  --ink: #182321;
+  --muted: #66736f;
+  --line: #d8dfdc;
+  --accent: #0f766e;
+  --accent-soft: #ddf3ef;
+  --accent-ink: #063f3b;
+  --accent-alt: #3b5bdb;
+  --editor: #fffdf7;
+  --editor-ink: #17211f;
+  --editor-line: #e0d8ca;
+  --editor-muted: #50605c;
+  --editor-code-bg: #eef1e9;
   --editor-code-ink: #0f172a;
   --editor-code-block: #172120;
   --editor-code-block-ink: #f7f5ed;
-  --editor-link: #0f6fb2;
+  --editor-link: #1d5fbf;
   --editor-placeholder: #8a918e;
-  --editor-quote: #84a59d;
-  --shadow: 0 18px 50px rgba(44, 35, 23, 0.11);
+  --editor-quote: #0f766e;
+  --shadow: 0 22px 70px rgba(35, 51, 47, 0.14);
+  --shadow-soft: 0 12px 32px rgba(35, 51, 47, 0.09);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color-scheme: light;
   background: var(--app-bg);
@@ -32,15 +35,17 @@
 }
 
 :root[data-theme='dark'] {
-  --app-bg: #161a1d;
-  --panel: #20262a;
-  --panel-soft: #1b2023;
-  --ink: #eef2ef;
-  --muted: #9aa7a2;
-  --line: #343d41;
-  --accent: #51b7a8;
-  --accent-soft: #173c38;
+  --app-bg: #111719;
+  --panel: #1c2426;
+  --panel-soft: #171e20;
+  --panel-glass: rgba(28, 36, 38, 0.88);
+  --ink: #eef5f2;
+  --muted: #9cafaa;
+  --line: #304044;
+  --accent: #5dd5c1;
+  --accent-soft: #173f3b;
   --accent-ink: #dcfffa;
+  --accent-alt: #9fb7ff;
   --editor: #111719;
   --editor-ink: #edf4f1;
   --editor-line: #2d393c;
@@ -52,7 +57,8 @@
   --editor-link: #7dd3fc;
   --editor-placeholder: #73827e;
   --editor-quote: #51b7a8;
-  --shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+  --shadow: 0 26px 80px rgba(0, 0, 0, 0.36);
+  --shadow-soft: 0 14px 36px rgba(0, 0, 0, 0.25);
   color-scheme: dark;
 }
 
@@ -66,6 +72,10 @@ body {
   background: var(--app-bg);
 }
 
+body::selection {
+  background: color-mix(in srgb, var(--accent) 24%, transparent);
+}
+
 button,
 input,
 select {
@@ -77,14 +87,31 @@ button {
 }
 
 .sidebar {
+  border-right-color: color-mix(in srgb, var(--line) 78%, transparent);
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
   height: 100vh;
   min-height: 0;
   overflow: hidden;
-  background: var(--panel-soft);
-  transition: width 180ms ease;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--panel) 84%, transparent), var(--panel-soft)),
+    var(--panel-soft);
+  transition: width 220ms ease;
+}
+
+.sidebar-head {
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 65%, transparent);
+}
+
+.brand-mark {
+  box-shadow:
+    0 10px 24px color-mix(in srgb, var(--accent) 24%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.sidebar-search {
+  padding-top: 0.9rem;
 }
 
 .doc-list {
@@ -92,12 +119,15 @@ button {
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
+  padding-top: 0.15rem;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--accent) 35%, transparent) transparent;
 }
 
 .topbar {
   align-items: center;
-  background: color-mix(in srgb, var(--panel) 92%, transparent);
-  border-bottom: 1px solid var(--line);
+  background: var(--panel-glass);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
   display: flex;
   flex: 0 0 auto;
   gap: 0.75rem;
@@ -106,13 +136,14 @@ button {
   position: sticky;
   top: 0;
   z-index: 20;
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(18px) saturate(1.2);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 .toolbar {
   align-items: center;
-  background: var(--panel);
-  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--panel-glass) 92%, var(--accent-soft));
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 74%, transparent);
   display: flex;
   flex: 0 0 auto;
   gap: 0.35rem;
@@ -122,6 +153,8 @@ button {
   position: sticky;
   top: 4.25rem;
   z-index: 19;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--accent) 32%, transparent) transparent;
 }
 
 .editor-wrap {
@@ -131,11 +164,16 @@ button {
   min-height: 0;
   overflow: auto;
   overscroll-behavior: contain;
-  padding: 2rem;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--app-bg) 86%, var(--panel)), var(--app-bg));
+  padding: 2.25rem 2rem;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--accent) 34%, transparent) transparent;
 }
 
 .paper-frame {
   max-width: 100%;
+  padding: 0.15rem;
   width: var(--paper-width);
 }
 
@@ -149,6 +187,18 @@ button {
   box-shadow: var(--shadow);
   outline: none;
   padding: clamp(2rem, 5vw, 4.5rem);
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.doc-surface:focus-within {
+  border-color: color-mix(in srgb, var(--accent) 42%, var(--editor-line));
+  box-shadow:
+    var(--shadow),
+    0 0 0 4px color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 .doc-surface > * + * {
@@ -237,8 +287,8 @@ button {
 
 .statusbar {
   align-items: center;
-  background: var(--panel);
-  border-top: 1px solid var(--line);
+  background: var(--panel-glass);
+  border-top: 1px solid color-mix(in srgb, var(--line) 74%, transparent);
   color: var(--muted);
   display: flex;
   flex: 0 0 auto;
@@ -247,6 +297,7 @@ button {
   gap: 1rem;
   min-height: 2.6rem;
   padding: 0.55rem 1rem;
+  backdrop-filter: blur(16px);
 }
 
 .icon-button,
@@ -254,13 +305,19 @@ button {
 .command-button {
   align-items: center;
   border: 1px solid transparent;
-  border-radius: 6px;
+  border-radius: 7px;
   color: var(--ink);
   display: inline-flex;
   flex: 0 0 auto;
   justify-content: center;
   min-height: 2.25rem;
-  transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
+  position: relative;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
 }
 
 .icon-button,
@@ -280,22 +337,40 @@ button {
   background: var(--accent-soft);
   border-color: color-mix(in srgb, var(--accent) 35%, transparent);
   color: var(--accent-ink);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.icon-button:hover,
+.tool-button:hover,
+.command-button:hover {
+  transform: translateY(-1px);
+}
+
+.icon-button:active,
+.tool-button:active,
+.command-button:active {
+  transform: translateY(0);
 }
 
 .field,
 .select,
 .title-input {
-  background: var(--panel);
+  background: color-mix(in srgb, var(--panel) 88%, transparent);
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: 7px;
   color: var(--ink);
   min-height: 2.35rem;
   outline: none;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .field {
   width: 100%;
   padding: 0 0.75rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 .select {
@@ -321,6 +396,7 @@ button {
 .field:focus,
 .select:focus {
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 .doc-tab {
@@ -332,7 +408,27 @@ button {
   gap: 0.5rem;
   min-height: 4.2rem;
   padding: 0.75rem;
+  position: relative;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
   width: 100%;
+}
+
+.doc-tab::before {
+  background: var(--accent);
+  border-radius: 999px;
+  bottom: 0.85rem;
+  content: '';
+  left: 0.45rem;
+  opacity: 0;
+  position: absolute;
+  top: 0.85rem;
+  transform: scaleY(0.6);
+  transition: opacity 160ms ease, transform 160ms ease;
+  width: 3px;
 }
 
 .doc-tab:hover,
@@ -342,7 +438,13 @@ button {
 }
 
 .doc-tab.active {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-soft);
+  transform: translateX(2px);
+}
+
+.doc-tab.active::before {
+  opacity: 1;
+  transform: scaleY(1);
 }
 
 .delete-button {
@@ -375,6 +477,7 @@ button {
   position: absolute;
   top: calc(100% + 0.35rem);
   z-index: 40;
+  animation: menu-in 140ms ease;
 }
 
 .swatch-menu.open {
@@ -386,7 +489,24 @@ button {
   border-radius: 999px;
   box-shadow: 0 0 0 1px var(--line);
   height: 1.35rem;
+  transition: transform 140ms ease, box-shadow 140ms ease;
   width: 1.35rem;
+}
+
+.swatch:hover {
+  box-shadow: 0 0 0 2px var(--panel), 0 0 0 4px var(--accent);
+  transform: scale(1.08);
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 850px) {

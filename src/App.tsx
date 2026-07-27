@@ -305,9 +305,9 @@ function App() {
         <aside
           className={`sidebar ${sidebarOpen ? 'w-80 border-r border-[var(--line)]' : 'w-0 overflow-hidden'}`}
         >
-          <div className="flex items-center justify-between gap-3 px-4 py-4">
+          <div className="sidebar-head flex items-center justify-between gap-3 px-4 py-4">
             <div className="flex items-center gap-2">
-              <div className="grid size-9 place-items-center rounded-md bg-[var(--accent)] text-white">
+              <div className="brand-mark grid size-9 place-items-center rounded-md bg-[var(--accent)] text-white">
                 <Sparkles size={18} />
               </div>
               <div>
@@ -320,7 +320,7 @@ function App() {
             </button>
           </div>
 
-          <div className="px-4 pb-3">
+          <div className="sidebar-search px-4 pb-3">
             <label className="relative block">
               <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]" size={16} />
               <input
@@ -377,7 +377,7 @@ function App() {
               aria-label="Document title"
             />
 
-            <div className="ml-auto flex items-center gap-2">
+            <div className="action-cluster ml-auto flex items-center gap-2">
               <button className="icon-button" type="button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} title="Toggle theme">
                 {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
               </button>
