@@ -360,8 +360,7 @@ button {
   z-index: 40;
 }
 
-.group:focus-within .swatch-menu,
-.group:hover .swatch-menu {
+.swatch-menu.open {
   display: flex;
 }
 

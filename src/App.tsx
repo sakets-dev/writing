@@ -56,6 +56,7 @@ type Doc = {
 
 type Theme = 'light' | 'dark'
 type PaperSizeId = 'a4' | 'letter' | 'legal' | 'a5' | 'executive'
+type ColorMenuId = 'text' | 'highlight' | null
 
 const STORAGE_KEY = 'desq-docs'
 const THEME_KEY = 'desq-theme'
@@ -158,6 +159,7 @@ function App() {
   const [activeId, setActiveId] = useState(() => docs[0]?.id ?? '')
   const [query, setQuery] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [openColorMenu, setOpenColorMenu] = useState<ColorMenuId>(null)
   const [theme, setTheme] = useState<Theme>(() => {
     const saved = localStorage.getItem(THEME_KEY)
     if (saved === 'light' || saved === 'dark') return saved
@@ -423,8 +425,28 @@ function App() {
             <ToolbarButton label="Underline" active={editor.isActive('underline')} onClick={() => editor.chain().focus().toggleUnderline().run()} icon={<UnderlineIcon size={17} />} />
             <ToolbarButton label="Strikethrough" active={editor.isActive('strike')} onClick={() => editor.chain().focus().toggleStrike().run()} icon={<Strikethrough size={17} />} />
             <Divider />
-            <ColorMenu icon={<Palette size={17} />} label="Text color" options={colors} onPick={(color) => editor.chain().focus().setColor(color).run()} />
-            <ColorMenu icon={<Highlighter size={17} />} label="Highlight" options={highlights} onPick={(color) => editor.chain().focus().toggleHighlight({ color }).run()} />
+            <ColorMenu
+              icon={<Palette size={17} />}
+              label="Text color"
+              open={openColorMenu === 'text'}
+              options={colors}
+              onToggle={() => setOpenColorMenu((current) => (current === 'text' ? null : 'text'))}
+              onPick={(color) => {
+                editor.chain().focus().setColor(color).run()
+                setOpenColorMenu(null)
+              }}
+            />
+            <ColorMenu
+              icon={<Highlighter size={17} />}
+              label="Highlight color"
+              open={openColorMenu === 'highlight'}
+              options={highlights}
+              onToggle={() => setOpenColorMenu((current) => (current === 'highlight' ? null : 'highlight'))}
+              onPick={(color) => {
+                editor.chain().focus().toggleHighlight({ color }).run()
+                setOpenColorMenu(null)
+              }}
+            />
             <ToolbarButton label="Link" active={editor.isActive('link')} onClick={setLink} icon={<Link2 size={17} />} />
             <Divider />
             <ToolbarButton label="Bullet list" active={editor.isActive('bulletList')} onClick={() => editor.chain().focus().toggleBulletList().run()} icon={<List size={17} />} />
@@ -486,20 +508,31 @@ function ToolbarButton({
 function ColorMenu({
   icon,
   label,
+  onToggle,
   onPick,
+  open,
   options,
 }: {
   icon: ReactNode
   label: string
+  onToggle: () => void
   onPick: (color: string) => void
+  open: boolean
   options: string[]
 }) {
   return (
-    <div className="group relative">
-      <button className="tool-button" type="button" title={label} aria-label={label}>
+    <div className="relative">
+      <button
+        className={`tool-button ${open ? 'active' : ''}`}
+        type="button"
+        title={label}
+        aria-label={label}
+        aria-expanded={open}
+        onClick={onToggle}
+      >
         {icon}
       </button>
-      <div className="swatch-menu">
+      <div className={`swatch-menu ${open ? 'open' : ''}`}>
         {options.map((color) => (
           <button
             className="swatch"
