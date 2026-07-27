@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { Extension } from '@tiptap/core'
 import { Color } from '@tiptap/extension-color'
 import FontFamily from '@tiptap/extension-font-family'
@@ -51,9 +51,11 @@ type Doc = {
   title: string
   updatedAt: number
   content: string
+  paperSize: PaperSizeId
 }
 
 type Theme = 'light' | 'dark'
+type PaperSizeId = 'a4' | 'letter' | 'legal' | 'a5' | 'executive'
 
 const STORAGE_KEY = 'desq-docs'
 const THEME_KEY = 'desq-theme'
@@ -74,6 +76,19 @@ const fontFamilies = [
 const fontSizes = ['12px', '14px', '16px', '18px', '22px', '28px', '36px']
 const colors = ['#111827', '#334155', '#0f766e', '#2563eb', '#7c3aed', '#be123c']
 const highlights = ['#fef08a', '#bfdbfe', '#bbf7d0', '#fbcfe8', '#fed7aa']
+const paperSizes: Array<{
+  id: PaperSizeId
+  label: string
+  width: number
+  height: number
+  print: string
+}> = [
+  { id: 'a4', label: 'A4', width: 794, height: 1123, print: 'A4' },
+  { id: 'letter', label: 'Letter', width: 816, height: 1056, print: 'Letter' },
+  { id: 'legal', label: 'Legal', width: 816, height: 1344, print: 'Legal' },
+  { id: 'a5', label: 'A5', width: 559, height: 794, print: 'A5' },
+  { id: 'executive', label: 'Executive', width: 696, height: 1008, print: 'Executive' },
+]
 
 const FontSize = Extension.create({
   name: 'fontSize',
@@ -102,6 +117,7 @@ function createDoc(title = 'Untitled document'): Doc {
     title,
     updatedAt: Date.now(),
     content: starterContent,
+    paperSize: 'a4',
   }
 }
 
@@ -110,7 +126,9 @@ function loadDocs(): Doc[] {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return [createDoc('Project brief')]
     const parsed = JSON.parse(raw) as Doc[]
-    return parsed.length ? parsed : [createDoc('Project brief')]
+    return parsed.length
+      ? parsed.map((doc) => ({ ...doc, paperSize: doc.paperSize ?? 'a4' }))
+      : [createDoc('Project brief')]
   } catch {
     return [createDoc('Project brief')]
   }
@@ -148,6 +166,7 @@ function App() {
   const loadedDocId = useRef<string | null>(null)
 
   const activeDoc = docs.find((doc) => doc.id === activeId) ?? docs[0]
+  const activePaper = paperSizes.find((size) => size.id === activeDoc?.paperSize) ?? paperSizes[0]
 
   const editor = useEditor(
     {
@@ -265,6 +284,7 @@ function App() {
 
   return (
     <main className="min-h-screen bg-[var(--app-bg)] text-[var(--ink)]">
+      <style>{`@page { size: ${activePaper.print}; margin: 0; }`}</style>
       <div className="flex min-h-screen">
         <aside
           className={`sidebar ${sidebarOpen ? 'w-80 border-r border-[var(--line)]' : 'w-0 overflow-hidden'}`}
@@ -362,6 +382,18 @@ function App() {
             <ToolbarButton label="Redo" active={false} onClick={() => editor.chain().focus().redo().run()} icon={<Redo2 size={17} />} />
             <Divider />
             <select
+              className="select compact"
+              value={activeDoc.paperSize}
+              onChange={(event) => updateActiveDoc({ paperSize: event.target.value as PaperSizeId })}
+              aria-label="Paper size"
+              title="Paper size"
+            >
+              {paperSizes.map((size) => (
+                <option key={size.id} value={size.id}>{size.label}</option>
+              ))}
+            </select>
+            <Divider />
+            <select
               className="select"
               value={editor.getAttributes('textStyle').fontFamily ?? fontFamilies[0].value}
               onChange={(event) => editor.chain().focus().setFontFamily(event.target.value).run()}
@@ -408,10 +440,21 @@ function App() {
           </div>
 
           <div className="editor-wrap">
-            <EditorContent editor={editor} />
+            <div
+              className="paper-frame"
+              style={
+                {
+                  '--paper-width': `${activePaper.width}px`,
+                  '--paper-height': `${activePaper.height}px`,
+                } as CSSProperties
+              }
+            >
+              <EditorContent editor={editor} />
+            </div>
           </div>
 
           <footer className="statusbar">
+            <span>{activePaper.label}</span>
             <span>{wordCount} words</span>
             <span>{characterCount} characters</span>
             <span>Saved {formatDate(activeDoc.updatedAt)}</span>
