@@ -165,6 +165,8 @@ function App() {
     if (saved === 'light' || saved === 'dark') return saved
     return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   })
+  const activeIdRef = useRef(activeId)
+  const editorWrapRef = useRef<HTMLDivElement | null>(null)
   const loadedDocId = useRef<string | null>(null)
 
   const activeDoc = docs.find((doc) => doc.id === activeId) ?? docs[0]
@@ -204,13 +206,17 @@ function App() {
         const html = editor.getHTML()
         setDocs((current) =>
           current.map((doc) =>
-            doc.id === activeId ? { ...doc, content: html, updatedAt: Date.now() } : doc,
+            doc.id === activeIdRef.current ? { ...doc, content: html, updatedAt: Date.now() } : doc,
           ),
         )
       },
     },
-    [activeId],
+    [],
   )
+
+  useEffect(() => {
+    activeIdRef.current = activeId
+  }, [activeId])
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
@@ -251,6 +257,14 @@ function App() {
     setDocs((current) => [next, ...current])
     setActiveId(next.id)
     setSidebarOpen(true)
+  }
+
+  function selectDoc(id: string) {
+    setActiveId(id)
+    setOpenColorMenu(null)
+    requestAnimationFrame(() => {
+      editorWrapRef.current?.scrollIntoView({ block: 'start', behavior: 'smooth' })
+    })
   }
 
   function deleteDoc(id: string) {
@@ -324,7 +338,7 @@ function App() {
                 className={`doc-tab ${doc.id === activeId ? 'active' : ''}`}
                 key={doc.id}
                 type="button"
-                onClick={() => setActiveId(doc.id)}
+                onClick={() => selectDoc(doc.id)}
               >
                 <span className="min-w-0 flex-1 text-left">
                   <span className="block truncate text-sm font-medium">{doc.title || 'Untitled document'}</span>
@@ -461,7 +475,7 @@ function App() {
             <ToolbarButton label="Clear formatting" active={false} onClick={() => editor.chain().focus().unsetAllMarks().clearNodes().run()} icon={<Type size={17} />} />
           </div>
 
-          <div className="editor-wrap">
+          <div className="editor-wrap" ref={editorWrapRef}>
             <div
               className="paper-frame"
               style={
